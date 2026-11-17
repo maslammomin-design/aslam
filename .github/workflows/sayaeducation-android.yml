@@ -23,7 +23,11 @@ jobs:
       - name: Install Android SDK 35
         run: |
           echo "Android SDK location: ${ANDROID_HOME}"
-          SDK_MANAGER="${ANDROID_HOME}/cmdline-tools/16.0/bin/sdkmanager"
+          mkdir -p "${ANDROID_HOME}/cmdline-tools"
+          curl --fail --location --retry 3 --silent --show-error             https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip             -o /tmp/saya-android-tools.zip
+          unzip -q /tmp/saya-android-tools.zip -d /tmp/saya-cmdline
+          mv /tmp/saya-cmdline/cmdline-tools "${ANDROID_HOME}/cmdline-tools/latest"
+          SDK_MANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
           yes | "${SDK_MANAGER}" --licenses >/dev/null || true
           "${SDK_MANAGER}" --install 'platforms;android-35' 'build-tools;35.0.0'
       - uses: gradle/actions/setup-gradle@v4
